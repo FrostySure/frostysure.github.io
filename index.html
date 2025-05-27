@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>硕宝❤瑶宝</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        love: {
+                            primary: '#FF4D6D',
+                            secondary: '#FFB3C1',
+                            accent: '#FF8FA3',
+                            light: '#FFF0F3',
+                            dark: '#C9184A'
+                        }
+                    },
+                    fontFamily: {
+                        romantic: ['Dancing Script', 'cursive', '微軟正黑體', 'Microsoft JhengHei', 'sans-serif']
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'heartbeat': 'heartbeat 1.5s ease-in-out infinite',
+                        'fadeIn': 'fadeIn 1.5s ease-in-out forwards',
+                        'slideUp': 'slideUp 1s ease-out forwards',
+                        'slideRight': 'slideRight 1s ease-out forwards',
+                        'scaleIn': 'scaleIn 0.5s ease-out forwards'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        heartbeat: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '14%': { transform: 'scale(1.2)' },
+                            '28%': { transform: 'scale(1)' },
+                            '42%': { transform: 'scale(1.2)' },
+                            '70%': { transform: 'scale(1)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        slideRight: {
+                            '0%': { transform: 'translateX(-20px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        scaleIn: {
+                            '0%': { transform: 'scale(0.8)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+            }
+            .text-shadow-lg {
+                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            }
+            .bg-blur {
+                backdrop-filter: blur(8px);
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .heart {
+                position: absolute;
+                width: 20px;
+                height: 20px;
+                background-color: #FF4D6D;
+                transform: rotate(45deg);
+                animation: float 3s ease-in-out infinite;
+            }
+            .heart:before,
+            .heart:after {
+                content: '';
+                position: absolute;
+                width: 20px;
+                height: 20px;
+                background-color: #FF4D6D;
+                border-radius: 50%;
+            }
+            .heart:before {
+                top: -10px;
+                left: 0;
+            }
+            .heart:after {
+                top: 0;
+                left: -10px;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-love-light min-h-screen overflow-x-hidden font-romantic text-love-dark">
+    <!-- 背景爱心 -->
+    <div id="hearts-container" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- 主容器 -->
+    <div class="relative z-10 flex flex-col items-center justify-center min-h-screen">
+        <!-- 导航栏 -->
+        <nav class="fixed top-0 left-0 right-0 bg-love-light/80 bg-blur z-50 transition-all duration-300" id="navbar">
+            <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+                <a href="#home" class="text-love-dark text-2xl font-bold tracking-wider hover:text-love-primary transition-colors duration-300">
+                    我们的故事
+                </a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#memory" class="text-love-dark hover:text-love-primary transition-colors duration-300">回忆</a>
+                    <a href="#gallery" class="text-love-dark hover:text-love-primary transition-colors duration-300">照片墙</a>
+                    <a href="#message" class="text-love-dark hover:text-love-primary transition-colors duration-300">给你的信</a>
+                    <a href="#promise" class="text-love-dark hover:text-love-primary transition-colors duration-300">未来承诺</a>
+                </div>
+                <button class="md:hidden text-love-dark text-xl" id="menu-toggle">
+                    <i class="fa fa-bars"></i>
+                </button>
+            </div>
+            <!-- 移动端菜单 -->
+            <div class="md:hidden hidden bg-love-light/95 bg-blur absolute w-full" id="mobile-menu">
+                <div class="container mx-auto px-4 py-3 flex flex-col space-y-4">
+                    <a href="#home" class="text-love-dark hover:text-love-primary transition-colors duration-300 py-2">首页</a>
+                    <a href="#memory" class="text-love-dark hover:text-love-primary transition-colors duration-300 py-2">回忆</a>
+                    <a href="#gallery" class="text-love-dark hover:text-love-primary transition-colors duration-300 py-2">照片墙</a>
+                    <a href="#message" class="text-love-dark hover:text-love-primary transition-colors duration-300 py-2">给你的信</a>
+                    <a href="#promise" class="text-love-dark hover:text-love-primary transition-colors duration-300 py-2">未来承诺</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 首页 -->
+        <section id="home" class="w-full min-h-screen flex flex-col items-center justify-center relative pt-16">
+            <div class="absolute inset-0 bg-gradient-to-b from-love-light to-white opacity-70"></div>
+            <div class="container mx-auto px-4 py-12 relative z-10 text-center">
+                <h1 class="text-[clamp(2.5rem,6vw,5rem)] font-bold text-love-primary mb-4 animate-fadeIn opacity-0 text-shadow-lg" style="animation-delay: 0.3s">
+                    我们的三年之约
+                </h1>
+                <p class="text-[clamp(1.2rem,3vw,2rem)] text-love-dark mb-8 animate-fadeIn opacity-0" style="animation-delay: 0.6s">
+                    亲爱的，<span id="anniversary-text">三周年</span>快乐
+                </p>
+                <div class="relative w-64 h-64 md:w-80 md:h-80 mx-auto mb-12 animate-float">
+                    <div class="absolute inset-0 bg-love-accent/20 rounded-full blur-3xl animate-pulse"></div>
+                    <div class="relative w-full h-full rounded-full overflow-hidden border-4 border-white shadow-xl animate-scaleIn opacity-0" style="animation-delay: 0.9s">
+                        <img src="static/PDS-qianshou.jpg" alt="我们的合照" class="w-full h-full object-cover">
+                    </div>
+                </div>
+                <div class="animate-slideUp opacity-0" style="animation-delay: 1.2s">
+                    <div class="inline-block bg-white/80 bg-blur rounded-full px-8 py-4 shadow-lg">
+                        <p class="text-love-dark text-xl md:text-2xl font-medium">
+                            <span id="days-counter" class="text-love-primary font-bold">加载中</span> 天
+                            <span class="mx-2">•</span>
+                            <span id="months-counter" class="text-love-primary font-bold">加载中</span> 个月
+                            <span class="mx-2">•</span>
+                            <span id="years-counter" class="text-love-primary font-bold">加载中</span> 年
+                        </p>
+                    </div>
+                </div>
+                <div class="mt-12 animate-slideUp opacity-0" style="animation-delay: 1.5s">
+                    <a href="#memory" class="inline-block bg-love-primary hover:bg-love-dark text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                        开始我们的故事 <i class="fa fa-heart ml-2 animate-heartbeat inline-block"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="absolute bottom-10 left-0 right-0 text-center animate-bounce">
+                <a href="#memory" class="text-love-primary/70 hover:text-love-primary transition-colors duration-300">
+                    <i class="fa fa-chevron-down text-2xl"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- 回忆时间线 -->
+        <section id="memory" class="w-full py-20 bg-white relative">
+            <div class="container mx-auto px-4">
+                <h2 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-love-primary mb-16 text-center text-shadow">
+                    我们的回忆时间线
+                </h2>
+                <div class="relative">
+                    <!-- 时间线 -->
+                    <div class="absolute left-0 md:left-1/2 top-0 bottom-0 w-1 bg-love-secondary transform md:translate-x-[-50%]"></div>
+                    
+                    <!-- 时间点1 -->
+                    <div class="mb-16 relative flex flex-col md:flex-row items-center opacity-0 transition-opacity duration-700" data-aos="fade-right" data-date="2022-05-14">
+                        <div class="order-2 md:order-1 md:w-1/2 md:pr-12 text-right">
+                            <div class="bg-love-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
+                                <h3 class="text-2xl font-bold text-love-primary mb-2">第一次相遇</h3>
+                                <p class="text-love-dark">我们在“青藤之恋”上认识，你经常给我发自然风光的照片。</p>
+                                <!-- <div class="mt-4 text-love-accent font-medium date-display">2022年</div> -->
+                            </div>
+                        </div>
+                        <div class="order-1 md:order-2 z-10 flex justify-center mb-4 md:mb-0">
+                            <div class="w-12 h-12 rounded-full bg-love-primary flex items-center justify-center text-white shadow-lg">
+                                <i class="fa fa-star text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="order-3 md:w-1/2 md:pl-12 hidden md:block">
+                            <div class="w-full h-48 rounded-lg overflow-hidden shadow-md">
+                                <img src="static/微信图片_202505271457421.jpg" alt="第一次相遇" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 时间点2 -->
+                    <div class="mb-16 relative flex flex-col md:flex-row items-center opacity-0 transition-opacity duration-700" data-aos="fade-left" data-date="2022-06-15">
+                        <div class="order-2 md:order-2 md:w-1/2 md:pl-12">
+                            <div class="bg-love-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
+                                <h3 class="text-2xl font-bold text-love-primary mb-2">第一次约会</h3>
+                                <p class="text-love-dark">那天，我们在凉山好汉第一次见面吃烤肉，你贴心的帮我“揩一哈”汗。原来瑶宝不吃正常早饭就吃不下中午的大鱼大肉，而瑶宝很会做好看又好吃的美食。</p>
+                                <div class="mt-4 text-love-accent font-medium date-display">2022年5月14日</div>
+                            </div>
+                        </div>
+                        <div class="order-1 z-10 flex justify-center mb-4 md:mb-0">
+                            <div class="w-12 h-12 rounded-full bg-love-primary flex items-center justify-center text-white shadow-lg">
+                                <i class="fa fa-coffee text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="order-3 md:w-1/2 md:pr-12 hidden md:block">
+                            <div class="w-full h-48 rounded-lg overflow-hidden shadow-md">
+                                <img src="static/微信图片_20230924135745.jpg" alt="第一次约会" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 时间点3 -->
+                    <div class="mb-16 relative flex flex-col md:flex-row items-center opacity-0 transition-opacity duration-700" data-aos="fade-right" data-date="2022-10-02">
+                        <div class="order-2 md:order-1 md:w-1/2 md:pr-12 text-right">
+                            <div class="bg-love-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
+                                <h3 class="text-2xl font-bold text-love-primary mb-2">第一次出去玩</h3>
+                                <p class="text-love-dark">青城山后山，门票我还存着呢，可惜当时着急赶车回来，他日定会当凌绝顶！</p>
+                                <!-- <div class="mt-4 text-love-accent font-medium date-display">2022年10月2日</div> -->
+                            </div>
+                        </div>
+                        <div class="order-1 md:order-2 z-10 flex justify-center mb-4 md:mb-0">
+                            <div class="w-12 h-12 rounded-full bg-love-primary flex items-center justify-center text-white shadow-lg">
+                                <i class="fa fa-hand-paper-o text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="order-3 md:w-1/2 md:pl-12 hidden md:block">
+                            <div class="w-full h-48 rounded-lg overflow-hidden shadow-md">
+                                <img src="static/微信图片_202505271457364.jpg" alt="第一次牵手" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 时间点4 -->
+                    <div class="mb-16 relative flex flex-col md:flex-row items-center opacity-0 transition-opacity duration-700" data-aos="fade-left" data-date="2023-02-14">
+                        <div class="order-2 md:order-2 md:w-1/2 md:pl-12">
+                            <div class="bg-love-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
+                                <h3 class="text-2xl font-bold text-love-primary mb-2">投我以木桃，报之以琼瑶</h3>
+                                <p class="text-love-dark">投汝以木桃，亦报之以琼瑶。</p>
+                                <!-- <div class="mt-4 text-love-accent font-medium date-display">2023年2月14日</div> -->
+                            </div>
+                        </div>
+                        <div class="order-1 z-10 flex justify-center mb-4 md:mb-0">
+                            <div class="w-12 h-12 rounded-full bg-love-primary flex items-center justify-center text-white shadow-lg">
+                                <i class="fa fa-heart text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="order-3 md:w-1/2 md:pr-12 hidden md:block">
+                            <div class="w-full h-48 rounded-lg overflow-hidden shadow-md">
+                                <img src="static/微信图片_20250527145733.jpg" alt="第一个情人节" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 现在 -->
+                    <div class="mb-16 relative flex flex-col md:flex-row items-center opacity-0 transition-opacity duration-700" data-aos="fade-right" data-date="now">
+                        <div class="order-2 md:order-1 md:w-1/2 md:pr-12 text-right">
+                            <div class="bg-love-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
+                                <h3 class="text-2xl font-bold text-love-primary mb-2">红绳</h3>
+                                <p class="text-love-dark">君当如磐石,妾当如蒲草。蒲草韧如丝,磐石无转移。</p>
+                                <div class="mt-4 text-love-accent font-medium" id="current-date"></div>
+                            </div>
+                        </div>
+                        <div class="order-1 md:order-2 z-10 flex justify-center mb-4 md:mb-0">
+                            <div class="w-12 h-12 rounded-full bg-love-primary flex items-center justify-center text-white shadow-lg animate-heartbeat">
+                                <i class="fa fa-diamond text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="order-3 md:w-1/2 md:pl-12 hidden md:block">
+                            <div class="w-full h-48 rounded-lg overflow-hidden shadow-md">
+                                <img src="static/微信图片_202505271457353.jpg" alt="红绳" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+                            </div>
+                        </div>
+                    </div>                    
+
+                    
+                    <!-- 时间点6 -->
+                    <div class="mb-16 relative flex flex-col md:flex-row items-center opacity-0 transition-opacity duration-700" data-aos="fade-left" data-date="2024-05-14">
+                        <div class="order-2 md:order-2 md:w-1/2 md:pl-12">
+                            <div class="bg-love-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
+                                <h3 class="text-2xl font-bold text-love-primary mb-2">油菜花田的惬意</h3>
+                                <p class="text-love-dark">两年了，时间过得真快。我们一起经历了很多，有欢笑，有泪水，但我们的爱从未改变。这一年，我们一起旅行，一起成长，一起创造了更多美好的回忆。</p>
+                            </div>
+                        </div>
+                        <div class="order-1 z-10 flex justify-center mb-4 md:mb-0">
+                            <div class="w-12 h-12 rounded-full bg-love-primary flex items-center justify-center text-white shadow-lg">
+                                <i class="fa fa-gift text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="order-3 md:w-1/2 md:pr-12 hidden md:block">
+                            <div class="w-full h-48 rounded-lg overflow-hidden shadow-md">
+                                <img src="static/微信图片_202505271457441.jpg" alt="两周年纪念" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 时间点5 -->
+                    <div class="mb-16 relative flex flex-col md:flex-row items-center opacity-0 transition-opacity duration-700" data-aos="fade-right" data-date="2023-05-14">
+                        <div class="order-2 md:order-1 md:w-1/2 md:pr-12 text-right">
+                            <div class="bg-love-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
+                                <h3 class="text-2xl font-bold text-love-primary mb-2">一二布布</h3>
+                                <p class="text-love-dark">一直很喜欢的两只小熊，愿我们与它们都幸福。</p>
+                            </div>
+                        </div>
+                        <div class="order-1 md:order-2 z-10 flex justify-center mb-4 md:mb-0">
+                            <div class="w-12 h-12 rounded-full bg-love-primary flex items-center justify-center text-white shadow-lg">
+                                <i class="fa fa-calendar text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="order-3 md:w-1/2 md:pl-12 hidden md:block">
+                            <div class="w-full h-48 rounded-lg overflow-hidden shadow-md">
+                                <img src="static/微信图片_202505271457373.jpg" alt="一二布布" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+                            </div>
+                        </div>
+                    </div>                    
+
+                    <!-- 时间点1 -->
+                    <div class="mb-16 relative flex flex-col md:flex-row items-center opacity-0 transition-opacity duration-700" data-aos="fade-right" data-date="2022-05-14">
+                        <div class="order-2 md:order-1 md:w-1/2 md:pr-12 text-right">
+                            <div class="bg-love-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
+                                <h3 class="text-2xl font-bold text-love-primary mb-2">逛吃使我们肥胖</h3>
+                                <p class="text-love-dark">要知道，之前我才是只负责吃虾的，哼哼。</p>
+                            </div>
+                        </div>
+                        <div class="order-1 md:order-2 z-10 flex justify-center mb-4 md:mb-0">
+                            <div class="w-12 h-12 rounded-full bg-love-primary flex items-center justify-center text-white shadow-lg">
+                                <i class="fa fa-star text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="order-3 md:w-1/2 md:pl-12 hidden md:block">
+                            <div class="w-full h-48 rounded-lg overflow-hidden shadow-md">
+                                <img src="static/微信图片_202505271457331.jpg" alt="逛吃使我们肥胖" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 时间点2 -->
+                    <div class="mb-16 relative flex flex-col md:flex-row items-center opacity-0 transition-opacity duration-700" data-aos="fade-left" data-date="2022-06-15">
+                        <div class="order-2 md:order-2 md:w-1/2 md:pl-12">
+                            <div class="bg-love-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
+                                <h3 class="text-2xl font-bold text-love-primary mb-2">九寨沟</h3>
+                                <p class="text-love-dark">辛苦叔叔开车啦，也谢谢阿姨和姑姑的热情招待~</p>
+                            </div>
+                        </div>
+                        <div class="order-1 z-10 flex justify-center mb-4 md:mb-0">
+                            <div class="w-12 h-12 rounded-full bg-love-primary flex items-center justify-center text-white shadow-lg">
+                                <i class="fa fa-coffee text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="order-3 md:w-1/2 md:pr-12 hidden md:block">
+                            <div class="w-full h-48 rounded-lg overflow-hidden shadow-md">
+                                <img src="static/微信图片_20250527145746.jpg" alt="第一次约会" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 时间点3 -->
+                    <div class="mb-16 relative flex flex-col md:flex-row items-center opacity-0 transition-opacity duration-700" data-aos="fade-right" data-date="2022-10-02">
+                        <div class="order-2 md:order-1 md:w-1/2 md:pr-12 text-right">
+                            <div class="bg-love-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
+                                <h3 class="text-2xl font-bold text-love-primary mb-2">瑶宝喜欢金毛</h3>
+                                <p class="text-love-dark">一直以来的愿望咯</p>
+                            </div>
+                        </div>
+                        <div class="order-1 md:order-2 z-10 flex justify-center mb-4 md:mb-0">
+                            <div class="w-12 h-12 rounded-full bg-love-primary flex items-center justify-center text-white shadow-lg">
+                                <i class="fa fa-hand-paper-o text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="order-3 md:w-1/2 md:pl-12 hidden md:block">
+                            <div class="w-full h-48 rounded-lg overflow-hidden shadow-md">
+                                <img src="static/微信图片_202505271457452.jpg" alt="瑶宝喜欢金毛" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 时间点4 -->
+                    <div class="mb-16 relative flex flex-col md:flex-row items-center opacity-0 transition-opacity duration-700" data-aos="fade-left" data-date="2023-02-14">
+                        <div class="order-2 md:order-2 md:w-1/2 md:pl-12">
+                            <div class="bg-love-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
+                                <h3 class="text-2xl font-bold text-love-primary mb-2">硕宝也喜欢金毛了</h3>
+                                <p class="text-love-dark">爱屋及乌。</p>
+                            </div>
+                        </div>
+                        <div class="order-1 z-10 flex justify-center mb-4 md:mb-0">
+                            <div class="w-12 h-12 rounded-full bg-love-primary flex items-center justify-center text-white shadow-lg">
+                                <i class="fa fa-heart text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="order-3 md:w-1/2 md:pr-12 hidden md:block">
+                            <div class="w-full h-48 rounded-lg overflow-hidden shadow-md">
+                                <img src="static/微信图片_202505271457453.jpg" alt="硕宝也喜欢金毛了" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- 时间点5 -->
+                    <div class="mb-16 relative flex flex-col md:flex-row items-center opacity-0 transition-opacity duration-700" data-aos="fade-right" data-date="2023-05-14">
+                        <div class="order-2 md:order-1 md:w-1/2 md:pr-12 text-right">
+                            <div class="bg-love-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
+                                <h3 class="text-2xl font-bold text-love-primary mb-2">金毛哈宝儿狗</h3>
+                                <p class="text-love-dark">二人一狗，幸福惬意。</p>
+                            </div>
+                        </div>
+                        <div class="order-1 md:order-2 z-10 flex justify-center mb-4 md:mb-0">
+                            <div class="w-12 h-12 rounded-full bg-love-primary flex items-center justify-center text-white shadow-lg">
+                                <i class="fa fa-calendar text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="order-3 md:w-1/2 md:pl-12 hidden md:block">
+                            <div class="w-full h-48 rounded-lg overflow-hidden shadow-md">
+                                <img src="static/微信图片_202505271457464.jpg" alt="金毛哈宝儿狗" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+                            </div>
+                        </div>
+                    </div>                    
+
+                    <!-- 现在 -->
+                    <!-- <div class="mb-16 relative flex flex-col md:flex-row items-center opacity-0 transition-opacity duration-700" data-aos="fade-right" data-date="now">
+                        <div class="order-2 md:order-1 md:w-1/2 md:pr-12 text-right">
+                            <div class="bg-love-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
+                                <h3 class="text-2xl font-bold text-love-primary mb-2">半个脑袋</h3>
+                                <p class="text-love-dark">生气的瑶宝打视频总喜欢让我看天花板。</p>
+                                <div class="mt-4 text-love-accent font-medium" id="current-date">2025年5月14日</div>
+                            </div>
+                        </div>
+                        <div class="order-1 md:order-2 z-10 flex justify-center mb-4 md:mb-0">
+                            <div class="w-12 h-12 rounded-full bg-love-primary flex items-center justify-center text-white shadow-lg animate-heartbeat">
+                                <i class="fa fa-diamond text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="order-3 md:w-1/2 md:pl-12 hidden md:block">
+                            <div class="w-full h-48 rounded-lg overflow-hidden shadow-md">
+                                <img src="static/微信图片_20250527145735.jpg" alt="半个脑袋" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+                            </div>
+                        </div>
+                    </div>                     -->
+
+                    
+                    <!-- 时间点6 -->
+                    <div class="mb-16 relative flex flex-col md:flex-row items-center opacity-0 transition-opacity duration-700" data-aos="fade-left" data-date="2024-05-14">
+                        <div class="order-2 md:order-2 md:w-1/2 md:pl-12">
+                            <div class="bg-love-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
+                                <h3 class="text-2xl font-bold text-love-primary mb-2">相濡以沫</h3>
+                                <p class="text-love-dark">爱意东升西落，浪漫至死不渝</p>
+                            </div>
+                        </div>
+                        <div class="order-1 z-10 flex justify-center mb-4 md:mb-0">
+                            <div class="w-12 h-12 rounded-full bg-love-primary flex items-center justify-center text-white shadow-lg">
+                                <i class="fa fa-gift text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="order-3 md:w-1/2 md:pr-12 hidden md:block">
+                            <div class="w-full h-48 rounded-lg overflow-hidden shadow-md">
+                                <img src="static/微信图片_20250527145732.jpg" alt="相濡以沫" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 照片墙 -->
+        <section id="gallery" class="w-full py-20 bg-love-light relative">
+            <div class="container mx-auto px-4">
+                <h2 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-love-primary mb-16 text-center text-shadow">
+                    我们的照片墙
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-2 transition-transform duration-300">
+                        <img src="static/微信图片_20230702203904.jpg" alt="照片1" class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <div class="p-4">
+                                <h3 class="text-white font-bold text-xl">瑶宝毕业快乐！</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-2 transition-transform duration-300">
+                        <img src="static/微信图片_20250527145745.jpg" alt="照片2" class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <div class="p-4">
+                                <h3 class="text-white font-bold text-xl">可爱的瑶宝</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-2 transition-transform duration-300">
+                        <img src="static/微信图片_20250527145747.jpg" alt="照片3" class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <div class="p-4">
+                                <h3 class="text-white font-bold text-xl">开心的仔仔</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-2 transition-transform duration-300">
+                        <img src="static/微信图片_202505271457351.jpg" alt="照片4" class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <div class="p-4">
+                                <h3 class="text-white font-bold text-xl">好耶！</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-2 transition-transform duration-300">
+                        <img src="static/微信图片_202505271457371.jpg" alt="照片5" class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <div class="p-4">
+                                <h3 class="text-white font-bold text-xl">开心的一家人</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-2 transition-transform duration-300">
+                        <img src="static/微信图片_202505271457454.jpg" alt="照片6" class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <div class="p-4">
+                                <h3 class="text-white font-bold text-xl">自信的瑶宝</h3>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-2 transition-transform duration-300">
+                        <img src="static/微信图片_202505271457461.jpg" alt="照片5" class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <div class="p-4">
+                                <h3 class="text-white font-bold text-xl">好运双黄蛋</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-2 transition-transform duration-300">
+                        <img src="static/微信图片_20250527145742.jpg" alt="照片5" class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <div class="p-4">
+                                <h3 class="text-white font-bold text-xl">互赠礼物</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-2 transition-transform duration-300">
+                        <img src="static/微信图片_202505271457463.jpg" alt="照片5" class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <div class="p-4">
+                                <h3 class="text-white font-bold text-xl">再祈祷一次吧</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 给你的信 -->
+        <section id="message" class="w-full py-20 bg-white relative">
+            <div class="container mx-auto px-4">
+                <h2 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-love-primary mb-16 text-center text-shadow">
+                    给你的信
+                </h2>
+                <div class="max-w-3xl mx-auto bg-love-light/50 p-8 rounded-lg shadow-xl relative">
+                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-love-primary text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg">
+                        <i class="fa fa-envelope text-xl"></i>
+                    </div>
+                    <div class="prose prose-lg max-w-none">
+                        <p class="text-center italic mb-8">亲爱的，</p>
+                        <p>今年是我们在一起的第三年，时间过得真快啊！还记得三年前我给你点了一颗爱心，从此，我的心就被你偷走了。</p>
+                        <p>这三年里，我们一起经历了很多美好的时光。我们一起旅行，一起看电影，一起做饭，一起度过了无数个日日夜夜。每一刻都让我感到无比幸福和满足。</p>
+                        <p>当然，我们也有过争吵和分歧，但这些都没有影响我们的感情，反而让我们更加了解彼此，更加珍惜彼此。我知道，爱情不仅仅是甜蜜和浪漫，更需要包容和理解。谢谢你一直以来的包容和理解，以及“管得多”，让我成为了更好的人。</p>
+                        <p>未来的路还很长，我希望我们能一直手牵手走下去。无论遇到什么困难和挑战，我都会一直在你身边，支持你，爱护你。我相信，我们的爱情会像美酒一样，越陈越香。</p>
+                        <p class="mt-8">永远爱你的硕宝</p>
+                        <p class="text-right italic">2025年5月14日</p>
+                        <!-- <div class="mt-4 text-love-accent font-medium" id="current-date"></div> -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 未来承诺 -->
+        <section id="promise" class="w-full py-20 bg-love-light relative">
+            <div class="container mx-auto px-4">
+                <h2 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-love-primary mb-16 text-center text-shadow">
+                    未来承诺
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                    <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 rounded-full bg-love-primary/20 flex items-center justify-center text-love-primary mr-4">
+                                <i class="fa fa-home text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-love-primary">共建一个家</h3>
+                        </div>
+                        <p class="text-love-dark">我承诺，我们将一起努力，打造一个温馨、和谐的家。这个家将充满爱和欢笑，成为我们避风的港湾，无论外面的世界如何变幻，这里永远是我们最温暖的归宿。</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 rounded-full bg-love-primary/20 flex items-center justify-center text-love-primary mr-4">
+                                <i class="fa fa-heart text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-love-primary">永远相爱</h3>
+                        </div>
+                        <p class="text-love-dark">我承诺，我会永远爱你，珍惜你，尊重你。无论顺境还是逆境，无论富裕还是贫穷，无论健康还是疾病，我都会一直在你身边，直到永远。</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 rounded-full bg-love-primary/20 flex items-center justify-center text-love-primary mr-4">
+                                <i class="fa fa-globe text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-love-primary">一起旅行</h3>
+                        </div>
+                        <p class="text-love-dark">我承诺，我们将一起探索这个美丽的世界，去看遍世间的美景，品尝各地的美食，体验不同的文化。我希望我们的足迹能够遍布全球，留下属于我们的美好回忆。</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 rounded-full bg-love-primary/20 flex items-center justify-center text-love-primary mr-4">
+                                <i class="fa fa-diamond text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-love-primary">相伴一生</h3>
+                        </div>
+                        <p class="text-love-dark">我承诺，我们将一起度过人生的每一个阶段，见证彼此的成长和变化。当我们白发苍苍时，依然能够手牵手，回忆过去的点点滴滴，感慨岁月的美好。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer class="w-full bg-love-primary text-white py-12 relative">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-6 md:mb-0">
+                        <h3 class="text-2xl font-bold mb-2">我们的故事</h3>
+                        <p>始于2022年5月14日，永远延续...</p>
+                    </div>
+                    <div class="flex space-x-4">
+                        <a href="#home" class="hover:text-love-light transition-colors duration-300">首页</a>
+                        <a href="#memory" class="hover:text-love-light transition-colors duration-300">回忆</a>
+                        <a href="#gallery" class="hover:text-love-light transition-colors duration-300">照片墙</a>
+                        <a href="#message" class="hover:text-love-light transition-colors duration-300">给你的信</a>
+                        <a href="#promise" class="hover:text-love-light transition-colors duration-300">未来承诺</a>
+                    </div>
+                </div>
+                <div class="mt-8 pt-8 border-t border-white/20 text-center">
+                    <p>用爱编织的回忆，将永远珍藏在心中 ❤️</p>
+                    <p class="mt-2 text-sm text-white/80">© 2025 我们的故事 | 三周年纪念</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // 生成背景爱心
+        function createHearts() {
+            const container = document.getElementById('hearts-container');
+            const colors = ['#FF4D6D', '#FF8FA3', '#FFB3C1'];
+            
+            for (let i = 0; i < 30; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                
+                // 随机位置
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                
+                // 随机大小
+                const size = Math.random() * 15 + 10;
+                
+                // 随机颜色
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                // 随机动画延迟和持续时间
+                const delay = Math.random() * 5;
+                const duration = Math.random() * 5 + 5;
+                
+                heart.style.left = `${left}vw`;
+                heart.style.top = `${top}vh`;
+                heart.style.width = `${size}px`;
+                heart.style.height = `${size}px`;
+                heart.style.backgroundColor = color;
+                heart.style.animationDelay = `${delay}s`;
+                heart.style.animationDuration = `${duration}s`;
+                
+                // 设置伪元素颜色
+                heart.style.setProperty('--heart-color', color);
+                
+                container.appendChild(heart);
+            }
+        }
+        
+        // 日期计算函数
+        function calculateLoveTime() {
+            const startDate = new Date(2022, 4, 14); // 2022年5月14日（月份从0开始）
+            const endDate = new Date(); // 当前日期
+            
+            // 计算总毫秒数差
+            const msDiff = endDate - startDate;
+            
+            // 转换为天、月、年
+            const days = Math.floor(msDiff / (1000 * 60 * 60 * 24));
+            
+            // 计算月和年（近似值）
+            const months = Math.floor(days / 30.44); // 平均每月天数
+            const years = Math.floor(months / 12);
+            
+            // 更新DOM
+            document.getElementById('days-counter').textContent = days;
+            document.getElementById('months-counter').textContent = months;
+            document.getElementById('years-counter').textContent = years;
+            
+            // 更新周年纪念文本
+            if (years > 0) {
+                document.getElementById('anniversary-text').textContent = `${years}周年`;
+            }
+            
+            // 更新当前日期显示
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('current-date').textContent = endDate.toLocaleDateString('zh-CN', options);
+            
+            // 更新时间线中的日期
+            const dateElements = document.querySelectorAll('.date-display');
+            dateElements.forEach(el => {
+                const parent = el.closest('[data-date]');
+                if (parent) {
+                    const dateStr = parent.getAttribute('data-date');
+                    if (dateStr !== 'now') {
+                        const date = new Date(dateStr);
+                        el.textContent = date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+                    }
+                }
+            });
+        }
+        
+        // 导航栏滚动效果
+        function handleNavbarScroll() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-love-light/95', 'shadow-md');
+                navbar.classList.remove('bg-love-light/80');
+            } else {
+                navbar.classList.remove('bg-love-light/95', 'shadow-md');
+                navbar.classList.add('bg-love-light/80');
+            }
+        }
+        
+        // 移动端菜单切换
+        function toggleMobileMenu() {
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            menuToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                if (!mobileMenu.classList.contains('hidden')) {
+                    menuToggle.innerHTML = '<i class="fa fa-times"></i>';
+                } else {
+                    menuToggle.innerHTML = '<i class="fa fa-bars"></i>';
+                }
+            });
+        }
+        
+        // 平滑滚动
+        function smoothScroll() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        // 关闭移动端菜单
+                        const mobileMenu = document.getElementById('mobile-menu');
+                        if (!mobileMenu.classList.contains('hidden')) {
+                            mobileMenu.classList.add('hidden');
+                            document.getElementById('menu-toggle').innerHTML = '<i class="fa fa-bars"></i>';
+                        }
+                        
+                        // 滚动到目标位置
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80, // 减去导航栏高度
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+        
+        // 滚动动画
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.opacity-0');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('opacity-100');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            elements.forEach(element => {
+                observer.observe(element);
+            });
+        }
+        
+        // 页面加载时执行
+        window.addEventListener('load', () => {
+            createHearts();
+            calculateLoveTime();
+            toggleMobileMenu();
+            smoothScroll();
+            animateOnScroll();
+            
+            // 初始化导航栏状态
+            handleNavbarScroll();
+        });
+        
+        // 滚动时处理导航栏
+        window.addEventListener('scroll', handleNavbarScroll);
+    </script>
+</body>
+</html>
